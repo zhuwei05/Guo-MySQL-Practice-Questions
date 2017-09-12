@@ -74,6 +74,7 @@ mysql> select deptno,max(sal) as maxsal from emp group by deptno;
 |     10 | 5000.00 |
 |     20 | 3000.00 |
 |     30 | 2850.00 |
+
 - 第二步：将上面的查询结果当作临时表t，t表和emp e表进行连接<br>
 条件：e.deptno=t.deptno and e.sal=t.sal
 
@@ -106,8 +107,10 @@ select deptno,avg(sal) as avgsal from emp group by deptno;
 |     10 | 2916.666667 |
 |     20 | 2175.000000 |
 |     30 | 1566.666667 |
+
 第二步：将上面的查询结果当作临时表t，与emp e表进行连接<br>
 条件：t.deptno=t.deptno and e.sal > t.avgsal
+
 ```
 select
   e.ename,e.sal,t.*
@@ -173,7 +176,7 @@ on
   e.sal between s.losal and s.hisal ;
 ```
 | ename  | sal  | deptno | grade |
-| :--------:|:--------:|:--------:|
+| :--------:|:--------:|:--------:|:--------:|
 | MILLER | 1300.00 |     10 |     2 |
 | KING   | 5000.00 |     10 |     5 |
 | CLARK  | 2450.00 |     10 |     4 |
