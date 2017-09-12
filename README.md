@@ -90,7 +90,7 @@ mysql> select
 ```
 
 | ename | deptno | maxsal  |
-| :--------:|:--------:|
+| :--------:|:--------:|:--------:|
 | BLAKE |     30 | 2850.00 |
 | SCOTT |     20 | 3000.00 |
 | KING  |     10 | 5000.00 |
@@ -211,3 +211,99 @@ group by
 |     10 |     4 |
 |     20 |     1 |
 |     30 |     3 |
+
+# 4、不用组函数(MAX),取得最高薪水(给出两种解决方案)
+方案一：按照薪水降序排，取得第一个
+
+``
+mysql> select sal from emp order by sal desc limit 1;
+``
+
+方案二：自连接
+
+``
+mysql>mysql> select sal from emp where sal not in(select a.sal from emp a join emp b on a.sal < b.sal);
+``
+
+| sal     |
+| :--------:|
+| 5000.00 |
+
+# 5、取得平均薪水最高的部门的编号(至少给出两种解决方案)
+
+第一种方案：平均薪水降序排取第一个<br>
+第一步：取得每个部门的平均薪水
+
+``
+mysql> select deptno,avg(sal) avgsal from emp group by deptno;
+``
+
+| deptno | avgsal      |
+| :--------:|:--------:|
+|     10 | 2916.666667 |
+|     20 | 2175.000000 |
+|     30 | 1566.666667 |
+
+第二步：取得平均薪水的最大值
+
+``
+mysql> select avg(sal) avgsal from emp group by deptno order by avgsal desc limit 1;
+``
+
+| avgsal      |
+| :--------:|
+| 2916.666667 |
+
+第三步：将第一步和第二步结合
+
+```
+select
+  deptno,avg(sal) as avgsal
+from
+  emp
+group by
+    deptno
+having
+    avg(sal)=( select avg(sal) avgsal from emp group by deptno order by avgsal desc limit 1);
+```
+
+| deptno | avgsal      |
+| :--------:|:--------:|
+|     10 | 2916.666667 |
+
+第二种方案：MAX函数<br>
+
+```
+select
+  deptno,avg(sal) as avgsal
+from
+  emp
+group by
+    deptno
+having
+    avg(sal)=( select max(t.avgsal) from (select avg(sal) avgsal from emp group by deptno) t);
+```
+
+| deptno | avgsal      |
+| :--------:|:--------:|
+|     10 | 2916.666667 |
+
+# 6、取得平均薪水最高的部门的部门名称
+
+```
+select
+  d.dname,avg(e.sal) as avgsal
+from
+  emp e
+join
+  dept d
+on e.deptno=d.deptno
+group by
+    d.dname
+having
+    avg(e.sal)=( select max(t.avgsal) from (select avg(sal) avgsal from emp group by deptno) t);
+```
+
+| dname      | avgsal      |
+| :--------:|:--------:|
+| ACCOUNTING | 2916.666667 |
