@@ -136,11 +136,13 @@ select deptno,avg(sal) as avgsal from emp group by deptno;
 
 | deptno | avgsal      |
 | :--------:|:--------:|
-|     10 | 2916.666667 |
-|     20 | 2175.000000 |
-|     30 | 1566.666667 |
+|  10 | 2916.666667 |
+|  20 | 2175.000000 |
+|  30 | 1566.666667 |
+
 第二部：将上面的查询结果当作临时表t，t表和salgrade s表进行关联
 条件：e.sal between s.losal and s.hisal
+
 ```
 select
   t.*,s.grade
@@ -170,7 +172,7 @@ join
 on
   e.sal between s.losal and s.hisal ;
 ```
-| ename  | sal     | deptno | grade |
+| ename  | sal  | deptno | grade |
 | :--------:|:--------:|:--------:|
 | MILLER | 1300.00 |     10 |     2 |
 | KING   | 5000.00 |     10 |     5 |
@@ -188,6 +190,7 @@ on
 | TURNER | 1500.00 |     30 |     3 |
 
 第二步：在以上基础上继续以部门编号分组，求平均薪水等级
+
 ```
 select
   e.deptno,s.grade
